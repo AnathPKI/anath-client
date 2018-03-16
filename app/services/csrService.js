@@ -37,15 +37,33 @@ angular.module('myApp')
                 })
             }));
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
-                type: "2.5.4.11",
+                type: "2.5.4.10",
                 value: new org.pkijs.asn1.UTF8STRING({
                     value: "DATONUS Switzerland"
                 })
             }));
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                type: "2.5.4.11",
+                value: new org.pkijs.asn1.UTF8STRING({
+                    value: "Kei Anig"
+                })
+            }));
+            pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                type: "2.5.4.13",
+                value: new org.pkijs.asn1.UTF8STRING({
+                    value: "Blablablatestdesc"
+                })
+            }));
+            pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                type: "1.2.840.113549.1.9.1",
+                value: new org.pkijs.asn1.UTF8STRING({
+                    value: "admin@datonus.ch"
+                })
+            }));
+            pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.3",
                 value: new org.pkijs.asn1.UTF8STRING({
-                    value: "blabla.datonus.ch"
+                    value: "vpn01.datonus.ch"
                 })
             }));
             pkcs10_simpl.attributes = [];
