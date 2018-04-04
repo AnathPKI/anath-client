@@ -1,34 +1,35 @@
 //jshint strict: false
-module.exports = function(config) {
-  config.set({
+module.exports = function (config) {
+    config.set({
 
-    basePath: './app',
+        basePath: './app',
 
-    files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-route/angular-route.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'components/**/*.js',
-      'view*/**/*.js'
-    ],
+        files: [
+            'bower_components/angular/angular.js',
+            'bower_components/angular-*/angular-*.js',
 
-    autoWatch: true,
+            'app.js',
+            'services/*.js',
+            'view*/**/*.js'
+        ],
 
-    frameworks: ['jasmine'],
+        autoWatch: true,
 
-    browsers: ['Chrome'],
+        frameworks: ['jasmine'],
 
-    plugins: [
-      'karma-chrome-launcher',
-      'karma-firefox-launcher',
-      'karma-jasmine',
-      'karma-junit-reporter'
-    ],
+        browsers: ['Chrome'],
 
-    junitReporter: {
-      outputFile: 'test_out/unit.xml',
-      suite: 'unit'
-    }
+        plugins: [
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-jasmine',
+            'karma-junit-reporter'
+        ],
 
-  });
+        junitReporter: {
+            outputFile: 'test_out/unit.xml',
+            suite: 'unit'
+        }
+
+    });
 };

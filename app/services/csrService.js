@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp')
+angular.module('anath')
     .factory('csrService', function ($q) {
 
         return function () {
