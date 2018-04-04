@@ -1,1 +1,7 @@
-List of certs
+<md-content>
+<md-select ng-model="ctrl.newCert.use">
+    <md-option ng-repeat="use in ctrl.use" md-value="use">
+        {{use.title}}
+    </md-option>
+</md-select>
+</md-content>

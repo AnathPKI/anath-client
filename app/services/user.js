@@ -1,4 +1,17 @@
 angular.module('anath')
+
+    .factory('UserService', function ($resource, appConfig) {
+        var user;
+        
+        return function (callBack) {
+            $resource(appConfig + "frontend/whoami").get().then(
+                function (userData) {
+                    user = userData;
+                    callBack(user);
+                }
+            )
+        }
+    })
     .factory('AuthenticationService', function ($http, $resource, appConfig) {
         var service = {};
 
