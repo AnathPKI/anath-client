@@ -25,11 +25,15 @@
 <body>
 
 <md-toolbar class="md-tall md-whiteframe-5dp">
-    <h1 class="md-toolbar-tools">{{title}}</h1>
+    <div layout="row">
+        <h1 class="md-toolbar-tools">{{title}}</h1>
+        <span class="md-secondary" layout-padding ng-hide="showLogin">{{userName}}</span>
+    </div>
 
-    <div class="md-toolbar-tools">
+    <div class="md-toolbar-tools" ng-hide="showLogin">
         <span flex></span>
-        <md-button href="#!/Create" aria-label="Create new certificate">
+        <!--<md-button></md-button>-->
+        <md-button href="#!/Create" aria-label="Create new certificate" class="md-raised">
             Create Certificate
         </md-button>
     </div>

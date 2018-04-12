@@ -4,15 +4,20 @@ angular.module('anath')
         var user;
         
         return function (callBack) {
-            $resource(appConfig + "frontend/whoami").get().then(
-                function (userData) {
-                    user = userData;
-                    callBack(user);
-                }
-            )
+                $resource(appConfig.AS_BACKEND_BASE_URL + "whoami").get({},
+                    function (userData) {
+                        user = userData;
+                        callBack(user);
+                    }, function (response) {
+                        if (response.status === 401) {
+                            window.location = "/#!/Login";
+                        }
+                    }
+                )
         }
     })
-    .factory('AuthenticationService', function ($http, $resource, appConfig) {
+
+    .factory('AuthenticationService', function ($http, $resource, appConfig, $location) {
         var service = {};
 
         service.login = function (username, password, callBack) {
@@ -38,6 +43,8 @@ angular.module('anath')
         service.logout = function () {
             delete localStorage.userToken;
             $http.defaults.headers.common['Authorization'] = '';
+
+            $location.path("/Login");
         };
 
         return service;

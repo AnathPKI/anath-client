@@ -28,6 +28,8 @@ angular.module('anath', [
 
     .config(['$httpProvider', 'appConfig', function ($httpProvider, appConfig) {
         $httpProvider.defaults.headers.common['X-Force-Content-Type'] = appConfig.ContentType;
+        $httpProvider.defaults.headers.post['Content-Type'] = appConfig.ContentType;
+        $httpProvider.defaults.headers.put['Content-Type'] = appConfig.ContentType;
     }])
 
     .decorator('$httpBackend', ['$delegate', 'appConfig', function($delegate, appConfig) {
@@ -41,15 +43,26 @@ angular.module('anath', [
         };
     }])
 
-    .run(function (appConfig, $rootScope, jwtHelper, $injector, $http) {
+    .run(function (appConfig, $rootScope, jwtHelper, $injector, $http, $interval, UserService) {
         $rootScope.title = appConfig.title;
 
-        if(localStorage.userToken) {
-            var token = localStorage.userToken;
-            if(jwtHelper.isTokenExpired(token)) {
-                $injector.get('AuthenticationService').logout();
-            } else {
-                $http.defaults.headers.common['Authorization'] = token;
+        function checkTokenExpired() {
+            if(localStorage.userToken) {
+                var token = localStorage.userToken;
+                if (jwtHelper.isTokenExpired(token)) {
+                    $injector.get('AuthenticationService').logout();
+                } else {
+                    $http.defaults.headers.common['Authorization'] = token;
+                }
             }
         }
+
+        checkTokenExpired();
+
+        $interval(checkTokenExpired, 30000);
+
+        UserService(function (user) {
+            $rootScope.admin = user.admin;
+            $rootScope.userName = user.user;
+        })
     });

@@ -10,7 +10,8 @@ angular.module('anath.viewLogin', ['ngRoute'])
         });
     }])
 
-    .controller('ViewLoginCtrl', function (AuthenticationService, $window) {
+    .controller('ViewLoginCtrl', function (AuthenticationService, $window, $rootScope) {
+        $rootScope.showLogin = true;
         var ctrl = this;
 
         ctrl.login = function () {
