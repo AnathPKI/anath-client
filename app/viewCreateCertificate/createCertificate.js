@@ -10,7 +10,7 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCreateCertificateCtrl', function (CreateService, $location, csrService, UserService, parseCert) {
+    .controller('ViewCreateCertificateCtrl', function (CreateService, CertificatesService, $location, csrService, UserService, parseCert) {
         var ctrl = this;
 
         ctrl.newCert = {};
@@ -25,7 +25,7 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
             ctrl.uses = uses.content;
         });
 
-        CreateService.ca.get({}, function (ca) {
+        CertificatesService.ca.get({}, function (ca) {
             var caPEM = "";
             angular.forEach(ca, function (entry) {
                 caPEM += entry;
@@ -58,7 +58,6 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
     .factory('CreateService', function ($resource, appConfig) {
         return {
             sign: $resource(appConfig.AS_BACKEND_BASE_URL + "sign"),
-            uses: $resource(appConfig.AS_BACKEND_BASE_URL + "uses"),
-            ca: $resource(appConfig.AS_BACKEND_BASE_URL + "ca")
+            uses: $resource(appConfig.AS_BACKEND_BASE_URL + "uses")
         }
     });

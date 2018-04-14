@@ -15,10 +15,15 @@ angular.module('anath', [
 ])
 
     .constant('appConfig', {
-        'AS_BACKEND_BASE_URL': 'http://192.168.191.175:8080/',
+        'AS_BACKEND_BASE_URL': 'http://10.255.255.3:8080/',
         'title': "Anath",
         'ContentType': 'application/vnd.anath.v1+json',
-        'ContentTypeUser': 'application/vnd.anath.user.v1+json'
+        'ContentTypeUser': 'application/vnd.anath.user.v1+json',
+        Replace_strings: {
+            CA: "[[CERT_CA]]",
+            CRT: "[[CERT_CRT]]",
+            KEY: "[[CERT_KEY]]"
+        }
     })
 
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {

@@ -1,11 +1,20 @@
 <md-content>
-    <h2>My Certificates</h2>
+    <div layout="row">
+        <h2>My Certificates</h2>
+        <md-button ng-click="valid = !valid" ng-init="valid=true">Display Invalid</md-button>
+    </div>
     <md-list>
 
-        <md-list-item ng-repeat="cert in ctrl.certificates">
-            {{cert.subject}}
+        <md-list-item>
+            <span class="md-title" flex="25">Use</span>
+            <span flex="20">Actions</span>
+        </md-list-item>
+        <md-list-item ng-repeat="cert in ctrl.certificates" ng-show="cert.valid == valid || cert.valid">
+            <span flex="20">
+                {{cert.use}}
+            </span>
             <div ng-show="cert.valid">
-                <md-button class="md-icon-button" href="{{cert.links[1].href}}">
+                <md-button class="md-icon-button" ng-click="ctrl.downloadConfig(cert.links[0].href, $event)">
                     <md-icon class="mi mi-file-download mi-24"></md-icon>
                     <md-tooltip>Download the the configuration with certificates and key</md-tooltip>
                 </md-button>
