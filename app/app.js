@@ -10,7 +10,8 @@ angular.module('anath', [
     'anath.view2',
     'anath.viewCertificates',
     'anath.viewCreateCertificate',
-    'anath.viewLogin'
+    'anath.viewLogin',
+    'anath.viewAdmin'
 ])
 
     .constant('appConfig', {

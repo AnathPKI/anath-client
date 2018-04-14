@@ -17,6 +17,7 @@
     "asn1js": "^0.1.0",
     "angular-material": "^1.1.8",
     "angular-resource": "^1.6.9",
-    "angular-jwt": "^0.1.9"
+    "angular-jwt": "^0.1.9",
+    "material-icons": "^0.2.1"
   }
 }

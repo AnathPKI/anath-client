@@ -32,7 +32,7 @@
 
     <div class="md-toolbar-tools" ng-hide="showLogin">
         <span flex></span>
-        <!--<md-button></md-button>-->
+        <md-button ng-show="admin" href="#!/Admin" aria-label="Admin Area button">Admin Area</md-button>
         <md-button href="#!/Create" aria-label="Create new certificate" class="md-raised">
             Create Certificate
         </md-button>
@@ -74,6 +74,7 @@
 <script src="view2/view2.js"></script>
 <script src="viewCertificates/certificates.js"></script>
 <script src="viewCreateCertificate/createCertificate.js"></script>
+<script src="viewAdmin/admin.js"></script>
 <script src="viewLogin/login.js"></script>
 </body>
 </html>

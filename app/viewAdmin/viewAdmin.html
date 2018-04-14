@@ -1,0 +1,40 @@
+<md-content>
+
+    <h2 ng-click="showUses = !showUses" ng-init="showUses = true">Uses:</h2>
+    <div ng-show="showUses">
+        <md-list>
+            <md-list-item ng-repeat="use in ctrl.uses" ng-click="ctrl.getSingleUse(use.links[1].href)">
+                {{use.use}}
+            </md-list-item>
+        </md-list>
+
+        <form ng-submit="ctrl.submitUse()" layout="row">
+            <md-input-container required>
+                <input type="text" ng-model="ctrl.useInput.use" aria-label="Name of the new use" required
+                       ng-disabled="ctrl.useInput.links !== undefined">
+                <label>Name of the Use</label>
+            </md-input-container>
+            <md-input-container required>
+                <textarea ng-model="ctrl.useInput.configuration" aria-label="Config of the new use" rows="5"
+                          md-select-on-focus required>
+
+                </textarea>
+                <label>Configuration of the Use</label>
+            </md-input-container>
+            <div layout="column">
+                <md-button type="submit" class="md-primary md-raised">Save</md-button>
+                <md-button ng-click="ctrl.useInput = {}" md-colors="{color: 'red'}" class="md-raised">Clear</md-button>
+            </div>
+        </form>
+    </div>
+
+    <h2 ng-click="showUsers = !showUsers" ng-init="showUsers = false">Users:</h2>
+    <div ng-show="showUsers">
+        <md-list>
+            <md-list-item ng-repeat="user in ctrl.users">
+                {{user}}
+            </md-list-item>
+        </md-list>
+    </div>
+
+</md-content>

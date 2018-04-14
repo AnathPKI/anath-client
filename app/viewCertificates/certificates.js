@@ -10,13 +10,35 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCertificatesCtrl', function (CertificatesService) {
+    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource) {
         var ctrl = this;
 
         ctrl.getCertificates = function () {
-            ctrl.certificates = CertificatesService.certificates.get();
+            CertificatesService.certificates.get({}, function (response) {
+                ctrl.certificates = response.content;
+            });
         };
         ctrl.getCertificates();
+
+        ctrl.revokeCert = function (link, ev) {
+            if(link.rel === "revoke") {
+                var confirm = $mdDialog.confirm()
+                    .title('Really revoke this certificate?')
+                    .textContent('If you revoke this certificate it is disabled and can not be used anylonger!')
+                    .ariaLabel('Revoke confirmation')
+                    .targetEvent(ev)
+                    .ok('Please do it!')
+                    .cancel('No, do NOT revoke!');
+
+                $mdDialog.show(confirm).then(function() {
+                    $resource(link.href, {}, { revoke: { method: 'PUT'} }).revoke({reason: "Revoked by user, using the web frontend"}, function () {
+                        ctrl.getCertificates();
+                    });
+                }, function() {
+
+                });
+            }
+        }
     })
 
     .factory('CertificatesService', function ($resource, appConfig) {

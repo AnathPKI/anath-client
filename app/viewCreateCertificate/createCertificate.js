@@ -31,7 +31,6 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
                 caPEM += entry;
             });
             var caSubject = parseCert(caPEM);
-            console.log(caSubject);
 
             ctrl.newCert.c = caSubject.C;
             ctrl.newCert.l = caSubject.L;
@@ -41,17 +40,16 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
         
         ctrl.createCSR = function () {
             csrService(ctrl.newCert.c, ctrl.newCert.s, ctrl.newCert.l, ctrl.newCert.o, "", ctrl.newCert.use.use, ctrl.newCert.email, ctrl.newCert.firstname + " " + ctrl.newCert.lastname, function (csr) {
-                console.log(csr);
                 CreateService.sign.save({
                     csr: {
                         pem: csr
                     },
                     use: ctrl.newCert.use.use
                 }, function () {
-                    //$location.href("/Download");
+                    $location.path("/Certificates");
                 })
             }, function (key) {
-                console.log(key);
+                localStorage[ctrl.newCert.use.use] = key;
             });
             /**/
         }
