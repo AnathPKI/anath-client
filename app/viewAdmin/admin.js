@@ -10,7 +10,7 @@ angular.module('anath.viewAdmin', ['ngRoute'])
         });
     }])
 
-    .controller('ViewAdminCtrl', function (UsesService, UserService, $resource) {
+    .controller('ViewAdminCtrl', function (UsesService, UsersService, $resource, $mdToast) {
         var ctrl = this;
 
         /*** Begin Use functions ***/
@@ -30,39 +30,70 @@ angular.module('anath.viewAdmin', ['ngRoute'])
 
         ctrl.submitUse = function () {
             console.log(ctrl.useInput);
-            if(ctrl.useInput.links !== undefined) {
+            if (ctrl.useInput.links !== undefined) {
                 UsesService.uses.update(ctrl.useInput, function (response) {
                     ctrl.getUses();
-                    console.log("done");
+                    $mdToast.show($mdToast.simple().textContent('Use Updated!').position("bottom"));
                 })
             } else {
                 UsesService.uses.save(ctrl.useInput, function (response) {
                     ctrl.getUses();
-                    console.log("Created");
+                    $mdToast.show($mdToast.simple().textContent('Use Created!').position("bottom"));
                 })
             }
-        }
+        };
 
         /*** Begin User functions ***/
         ctrl.getUsers = function () {
-            UserService.users.get({}, function (response) {
+            UsersService.get({}, function (response) {
+                console.log(response);
                 ctrl.users = response.content;
             })
         };
-        ctrl.getUses();
+        ctrl.getUsers();
+        
+        ctrl.getSingleUser = function (user) {
+            ctrl.userInput = UsersService.get({id: user.id});
+        };
+
+        ctrl.submitUser = function () {
+            if(ctrl.userInput.links === undefined) {
+                UsersService.save(ctrl.userInput, function () {
+                    ctrl.getUsers();
+                    $mdToast.show($mdToast.simple().textContent('User Created!').position("bottom"));
+                });
+            } else {
+                UsersService.update(ctrl.userInput, function () {
+                    ctrl.getUsers();
+                    $mdToast.show($mdToast.simple().textContent('User Updated!').position("bottom"));
+                });
+            }
+        }
     })
 
-    .factory('UserService', function ($resource, appConfig) {
-        return {
-            users: $resource(appConfig.AS_BACKEND_BASE_URL + "users/:id", {
+    .factory('UsersService', function ($resource, appConfig) {
+        return $resource(appConfig.AS_BACKEND_BASE_URL + "users/:id", {
                     "id": "@id"
                 }, {
                     update: {
-                        method: "PUT"
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": appConfig.ContentTypeUser
+                        }
+                    },
+                    get: {
+                        headers: {
+                            "X-Force-Content-Type": appConfig.ContentTypeUser
+                        }
+                    },
+                    save: {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": appConfig.ContentTypeUser
+                        }
                     }
                 }
             )
-        }
     })
 
     .factory('UsesService', function ($resource, appConfig) {

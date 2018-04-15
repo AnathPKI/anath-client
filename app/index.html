@@ -27,12 +27,30 @@
 <md-toolbar class="md-tall md-whiteframe-5dp">
     <div layout="row">
         <h1 class="md-toolbar-tools">{{title}}</h1>
-        <span class="md-secondary" layout-padding ng-hide="showLogin">{{userName}}</span>
+
+        <span class="md-secondary" layout-padding ng-hide="showLogin">
+            <md-menu ng-controller="UserMenuCtrl">
+      <md-button aria-label="Open user menu"
+                 ng-click="$mdMenu.open($event)">
+        {{userName}}
+      </md-button>
+      <md-menu-content>
+        <md-menu-item>
+          <md-button ng-click="logout()">
+            Logout
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+        </md-menu>
+        </span>
     </div>
 
     <div class="md-toolbar-tools" ng-hide="showLogin">
         <span flex></span>
         <md-button ng-show="admin" href="#!/Admin" aria-label="Admin Area button">Admin Area</md-button>
+        <md-button href="#!/Certificates" aria-label="Go to My Certificates" class="md-primary md-raised">My
+            Certificates
+        </md-button>
         <md-button href="#!/Create" aria-label="Create new certificate" class="md-raised">
             Create Certificate
         </md-button>
@@ -70,6 +88,7 @@
 <script src="app.js"></script>
 <script src="services/user.js"></script>
 <script src="services/csrService.js"></script>
+<script src="services/download.js"></script>
 <script src="view1/view1.js"></script>
 <script src="view2/view2.js"></script>
 <script src="viewCertificates/certificates.js"></script>

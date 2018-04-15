@@ -10,7 +10,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService) {
+    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService, DownloadService) {
         var ctrl = this;
 
         ctrl.getCertificates = function () {
@@ -19,6 +19,10 @@ angular.module('anath.viewCertificates', ['ngRoute'])
             });
         };
         ctrl.getCertificates();
+        
+        ctrl.extractMail = function (text) {
+            return text.replace(/^.*E=/, '').replace(/\+CN=.*$/, '');
+        };
 
         ctrl.revokeCert = function (link, ev) {
             if (link.rel === "revoke") {
@@ -41,27 +45,26 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         };
 
         function concatConfig(key, cert, config) {
-            console.log(config);
             CertificatesService.ca.get({}, function (response) {
                 var ca = "";
                 angular.forEach(response, function (entry) {
                     ca += entry;
                 });
+                ca = ca.replace(/\[object Object\]true/g, '');
 
                 config = config.replace(appConfig.Replace_strings.CA, ca);
-                console.log(config);
                 config = config.replace(appConfig.Replace_strings.CRT, cert);
-                console.log(config);
                 config = config.replace(appConfig.Replace_strings.KEY, key);
+                config = config.replace(/\n/g, '\r\n');
 
-                console.log(config);
+                DownloadService.downloadTextFile(config, "testfile.conf")
             })
         }
 
         ctrl.downloadConfig = function (link, ev) {
             $resource(link).get({}, function (response) {
-                var cert = response.cert.pem;
-                var config = response.config;
+                var cert = response.cert.pem.replace(/\[object Object\]true/g, '');
+                var config = atob(response.config);
 
                 if (localStorage[response.use] === undefined) {
                     var key = appConfig.Replace_strings.KEY;
@@ -75,8 +78,9 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                         .cancel('Do not download');
 
                     $mdDialog.show(confirm).then(function () {
-                        var key = localStorage[response.use];
                         concatConfig(key, cert, config);
+                    }, function () {
+
                     });
                 } else {
                     var key = localStorage[response.use];

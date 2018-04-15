@@ -48,6 +48,10 @@ angular.module('anath', [
             return $delegate.apply(null, arguments);
         };
     }])
+    
+    .controller('UserMenuCtrl', function (AuthenticationService, $scope) {
+        $scope.logout = AuthenticationService.logout;
+    })
 
     .run(function (appConfig, $rootScope, jwtHelper, $injector, $http, $interval, UserService) {
         $rootScope.title = appConfig.title;
