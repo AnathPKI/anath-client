@@ -6,8 +6,6 @@ angular.module('anath', [
     'ngMaterial',
     'ngResource',
     'angular-jwt',
-    'anath.view1',
-    'anath.view2',
     'anath.viewCertificates',
     'anath.viewCreateCertificate',
     'anath.viewLogin',

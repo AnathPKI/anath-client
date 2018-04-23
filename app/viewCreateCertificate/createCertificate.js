@@ -45,7 +45,8 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
                         pem: csr
                     },
                     use: ctrl.newCert.use.use
-                }, function () {
+                }, function (response) {
+                    console.log(response);
                     $location.path("/Certificates");
                 })
             }, function (key) {
