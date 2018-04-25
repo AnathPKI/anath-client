@@ -93,7 +93,7 @@ angular.module('anath')
                 return crypto.digest({
                     name: "SHA-256"
                 }, pkcs10_simpl.subjectPublicKeyInfo.subjectPublicKey.value_block.value_hex);
-            })/*.then(function (result) {
+            }).then(function (result) {
                 pkcs10_simpl.attributes.push(new org.pkijs.simpl.ATTRIBUTE({
                     type: "1.2.840.113549.1.9.14",
                     values: [(new org.pkijs.simpl.EXTENSION({
@@ -108,7 +108,7 @@ angular.module('anath')
                         ]
                     })).toSchema()]
                 }));
-            });*/
+            });
 
             sequence = sequence.then(function () {
                 return pkcs10_simpl.sign(privateKey, hash_algorithm);

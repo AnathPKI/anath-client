@@ -25,12 +25,12 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
             ctrl.uses = uses.content;
         });
 
-        CertificatesService.ca.get({}, function (ca) {
-            var caPEM = "";
+        CertificatesService.ca(function (ca) {
+            /*var caPEM = "";
             angular.forEach(ca, function (entry) {
                 caPEM += entry;
-            });
-            var caSubject = parseCert(caPEM);
+            });*/
+            var caSubject = parseCert(ca.data);
 
             ctrl.newCert.c = caSubject.C;
             ctrl.newCert.l = caSubject.L;
@@ -40,7 +40,8 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
         
         ctrl.createCSR = function () {
             csrService(ctrl.newCert.c, ctrl.newCert.s, ctrl.newCert.l, ctrl.newCert.o, "", ctrl.newCert.use.use, ctrl.newCert.email, ctrl.newCert.firstname + " " + ctrl.newCert.lastname, function (csr) {
-                CreateService.sign.save({
+                console.log(csr);
+                CertificatesService.certificates.save({
                     csr: {
                         pem: csr
                     },
@@ -50,15 +51,14 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
                     $location.path("/Certificates");
                 })
             }, function (key) {
+                console.log(key);
                 localStorage[ctrl.newCert.use.use] = key;
             });
-            /**/
         }
     })
 
     .factory('CreateService', function ($resource, appConfig) {
         return {
-            sign: $resource(appConfig.AS_BACKEND_BASE_URL + "sign"),
             uses: $resource(appConfig.AS_BACKEND_BASE_URL + "uses")
         }
     });

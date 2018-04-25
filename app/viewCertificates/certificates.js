@@ -45,14 +45,9 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         };
 
         function concatConfig(key, cert, config) {
-            CertificatesService.ca.get({}, function (response) {
-                var ca = "";
-                angular.forEach(response, function (entry) {
-                    ca += entry;
-                });
-                ca = ca.replace(/\[object Object\]true/g, '');
+            CertificatesService.ca(function (response) {
 
-                config = config.replace(appConfig.Replace_strings.CA, ca);
+                config = config.replace(appConfig.Replace_strings.CA, response.data);
                 config = config.replace(appConfig.Replace_strings.CRT, cert);
                 config = config.replace(appConfig.Replace_strings.KEY, key);
                 config = config.replace(/\n/g, '\r\n');
@@ -90,9 +85,18 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         }
     })
 
-    .factory('CertificatesService', function ($resource, appConfig) {
+    .factory('CertificatesService', function ($resource, appConfig, $http) {
         return {
-            certificates: $resource(appConfig.AS_BACKEND_BASE_URL + "/certificates"),
-            ca: $resource(appConfig.AS_BACKEND_BASE_URL + "ca")
+            certificates: $resource(appConfig.AS_BACKEND_BASE_URL + "certificates"),
+            ca: function (callback) {
+                $http(
+                    {
+                        url: appConfig.AS_BACKEND_BASE_URL + "ca.pem",
+                        method: 'GET',
+                        transformResponse: [function (data) {
+                            return data;
+                        }]
+                    }).then(callback);
+            }
         }
     });
