@@ -35,12 +35,12 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
             ctrl.newCert.c = caSubject.C;
             ctrl.newCert.l = caSubject.L;
             ctrl.newCert.o = caSubject.O;
-            ctrl.newCert.s = caSubject.S
+            ctrl.newCert.s = caSubject.S;
+            ctrl.newCert.ou = caSubject.OU;
         });
         
         ctrl.createCSR = function () {
-            csrService(ctrl.newCert.c, ctrl.newCert.s, ctrl.newCert.l, ctrl.newCert.o, "", ctrl.newCert.use.use, ctrl.newCert.email, ctrl.newCert.firstname + " " + ctrl.newCert.lastname, function (csr) {
-                console.log(csr);
+            csrService(ctrl.newCert.c, ctrl.newCert.s, ctrl.newCert.l, ctrl.newCert.o, ctrl.newCert.ou, ctrl.newCert.use.use, ctrl.newCert.email, ctrl.newCert.firstname + " " + ctrl.newCert.lastname, function (csr) {
                 CertificatesService.certificates.save({
                     csr: {
                         pem: csr
@@ -51,7 +51,6 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
                     $location.path("/Certificates");
                 })
             }, function (key) {
-                console.log(key);
                 localStorage[ctrl.newCert.use.use] = key;
             });
         }

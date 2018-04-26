@@ -1,5 +1,32 @@
 'use strict';
 
+/** Patch RDN to not use multivalue **/
+org.pkijs.simpl.RDN.prototype.toSchema =
+    function () {
+        // #region Decode stored TBS value 
+        if (this.value_before_decode.byteLength === 0) // No stored encoded array, create "from scratch"
+        {
+            // #region Create array for output set 
+            var output_array = new Array();
+
+            for (var i = 0; i < this.types_and_values.length; i++)
+                output_array.push(new org.pkijs.asn1.SET({value: [this.types_and_values[i].toSchema()]}));
+            // #endregion 
+
+            return (new org.pkijs.asn1.SEQUENCE({
+                value: output_array
+            }));
+        }
+
+        var asn1 = org.pkijs.fromBER(this.value_before_decode);
+        // #endregion 
+
+        // #region Construct and return new ASN.1 schema for this object 
+        return asn1.result;
+        // #endregion 
+    };
+/** End patch **/
+
 angular.module('anath')
     .factory('csrService', function ($q) {
 
@@ -18,6 +45,7 @@ angular.module('anath')
             keylength = 4096;
 
             pkcs10_simpl.version = 0;
+            pkcs10_simpl.subject = new org.pkijs.simpl.RDN();
 
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.6",
@@ -43,12 +71,12 @@ angular.module('anath')
                     value: o
                 })
             }));
-            /*pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+            pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.11",
                 value: new org.pkijs.asn1.UTF8STRING({
                     value: ou
                 })
-            }));*/
+            }));
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.13",
                 value: new org.pkijs.asn1.PRINTABLESTRING({
@@ -81,7 +109,7 @@ angular.module('anath')
             sequence = sequence.then(function (keyPair) {
                 publicKey = keyPair.publicKey;
                 privateKey = keyPair.privateKey;
-            }, function(error) {
+            }, function (error) {
                 console.log(error);
             });
 
@@ -143,7 +171,7 @@ angular.module('anath')
             var string_length = pem_string.length;
             var result_string = "";
 
-            for (var i = 0, count = 0; i < string_length; i++, count ++) {
+            for (var i = 0, count = 0; i < string_length; i++, count++) {
                 if (count > 63) {
                     result_string = result_string + "\n";
                     count = 0;
@@ -159,7 +187,7 @@ angular.module('anath')
             var result_string = "";
             var view = new Uint8Array(buffer);
 
-            for(var i = 0; i< view.length; i++) {
+            for (var i = 0; i < view.length; i++) {
                 result_string = result_string + String.fromCharCode(view[i]);
             }
 
@@ -170,14 +198,13 @@ angular.module('anath')
 
     .factory('parseCert', function () {
 
-        function stringToArrayBuffer(str)
-        {
+        function stringToArrayBuffer(str) {
             /// <summary>Create an ArrayBuffer from string</summary>
             /// <param name="str" type="String">String to create ArrayBuffer from</param>
             var stringLength = str.length;
             var resultBuffer = new ArrayBuffer(stringLength);
             var resultView = new Uint8Array(resultBuffer);
-            for(var i = 0; i < stringLength; i++)
+            for (var i = 0; i < stringLength; i++)
                 resultView[i] = str.charCodeAt(i);
             return resultBuffer;
         }
@@ -189,7 +216,7 @@ angular.module('anath')
             var certBuffer = stringToArrayBuffer(cert);
 
             var asn1 = org.pkijs.fromBER(certBuffer);
-            var cert_simpl = new org.pkijs.simpl.CERT({ schema: asn1.result });
+            var cert_simpl = new org.pkijs.simpl.CERT({schema: asn1.result});
 
             var rdnmap = {
                 "2.5.4.6": "C",
@@ -206,39 +233,38 @@ angular.module('anath')
             };
 
             /*for(var i = 0; i < cert_simpl.issuer.types_and_values.length; i++)
-            {
-                var typeval = rdnmap[cert_simpl.issuer.types_and_values[i].type];
-                if(typeof typeval === "undefined")
-                    typeval = cert_simpl.issuer.types_and_values[i].type;
-                var subjval = cert_simpl.issuer.types_and_values[i].value.value_block.value;
-                var row = issuerTable.insertRow(issuerTable.rows.length);
-                var cell0 = row.insertCell(0);
-                cell0.innerHTML = typeval;
-                var cell1 = row.insertCell(1);
-                cell1.innerHTML = subjval;
-            }*/
+             {
+             var typeval = rdnmap[cert_simpl.issuer.types_and_values[i].type];
+             if(typeof typeval === "undefined")
+             typeval = cert_simpl.issuer.types_and_values[i].type;
+             var subjval = cert_simpl.issuer.types_and_values[i].value.value_block.value;
+             var row = issuerTable.insertRow(issuerTable.rows.length);
+             var cell0 = row.insertCell(0);
+             cell0.innerHTML = typeval;
+             var cell1 = row.insertCell(1);
+             cell1.innerHTML = subjval;
+             }*/
 
             var certInformation = {};
 
-            for(var i = 0; i < cert_simpl.subject.types_and_values.length; i++)
-            {
+            for (var i = 0; i < cert_simpl.subject.types_and_values.length; i++) {
                 var typeval = rdnmap[cert_simpl.subject.types_and_values[i].type];
-                if(typeof typeval === "undefined")
+                if (typeof typeval === "undefined")
                     typeval = cert_simpl.subject.types_and_values[i].type;
                 var subjval = cert_simpl.subject.types_and_values[i].value.value_block.value;
                 certInformation[typeval] = subjval;
                 /*var row = subjectTable.insertRow(subjectTable.rows.length);
-                var cell0 = row.insertCell(0);
-                cell0.innerHTML = typeval;
-                var cell1 = row.insertCell(1);
-                cell1.innerHTML = subjval;*/
+                 var cell0 = row.insertCell(0);
+                 cell0.innerHTML = typeval;
+                 var cell1 = row.insertCell(1);
+                 cell1.innerHTML = subjval;*/
             }
 
             return certInformation;
 
             /*var information = {
 
-            }*/
+             }*/
         }
 
     });
