@@ -1,73 +1,15 @@
 'use strict';
 
-var Anath = {};
-
-Anath.RDN =
-    function()
-    {
-        // #region Internal properties of the object 
-        /// <field name="types_and_values" type="Array" elementType="Anath.ATTR_TYPE_AND_VALUE">Array of "type and value" objects</field>
-        this.types_and_values = new Array();
-        /// <field name="value_before_decode" type="ArrayBuffer">Value of the RDN before decoding from schema</field>
-        this.value_before_decode = new ArrayBuffer(0);
-        // #endregion 
-
-        // #region If input argument array contains "schema" for this object 
-        if((arguments[0] instanceof Object) && ("schema" in arguments[0]))
-            Anath.RDN.prototype.fromSchema.call(this, arguments[0].schema);
-            // #endregion 
-            // #region If input argument array contains "native" values for internal properties 
-        else
-        {
-            if(arguments[0] instanceof Object)
-            {
-                this.types_and_values = (arguments[0].types_and_values || (new Array()));
-                this.value_before_decode = arguments[0].value_before_decode || new ArrayBuffer(0);
-            }
-        }
-        // #endregion 
-    };
-    //**************************************************************************************
-    Anath.RDN.prototype.fromSchema =
-    function(schema)
-    {
-        // #region Check the schema is valid 
-        var asn1 = org.pkijs.compareSchema(schema,
-            schema,
-            org.pkijs.schema.RDN({
-                names: {
-                    block_name: "RDN",
-                    repeated_set: "types_and_values"
-                }
-            })
-            );
-
-        if(asn1.verified === false)
-            throw new Error("Object's schema was not verified against input data for RDN");
-        // #endregion 
-
-        // #region Get internal properties from parsed schema 
-        if("types_and_values" in asn1.result) // Could be a case when there is no "types and values"
-        {
-            var types_and_values_array = asn1.result.types_and_values;
-            for(var i = 0; i < types_and_values_array.length; i++)
-                this.types_and_values.push(new Anath.ATTR_TYPE_AND_VALUE({ schema: types_and_values_array[i] }));
-        }
-
-        this.value_before_decode = asn1.result.RDN.value_before_decode;
-        // #endregion 
-    };
-    //**************************************************************************************
-    Anath.RDN.prototype.toSchema =
-    function()
-    {
+/** Patch RDN to not use multivalue **/
+org.pkijs.simpl.RDN.prototype.toSchema =
+    function () {
         // #region Decode stored TBS value 
-        if(this.value_before_decode.byteLength === 0) // No stored encoded array, create "from scratch"
+        if (this.value_before_decode.byteLength === 0) // No stored encoded array, create "from scratch"
         {
             // #region Create array for output set 
             var output_array = new Array();
 
-            for(var i = 0; i < this.types_and_values.length; i++)
+            for (var i = 0; i < this.types_and_values.length; i++)
                 output_array.push(new org.pkijs.asn1.SET({value: [this.types_and_values[i].toSchema()]}));
             // #endregion 
 
@@ -83,46 +25,7 @@ Anath.RDN =
         return asn1.result;
         // #endregion 
     };
-    //**************************************************************************************
-    Anath.RDN.prototype.isEqual =
-    function()
-    {
-        if(arguments[0] instanceof Anath.RDN)
-        {
-            if(this.types_and_values.length != arguments[0].types_and_values.length)
-                return false;
-
-            for(var i = 0; i < this.types_and_values.length; i++)
-            {
-                if(this.types_and_values[i].isEqual(arguments[0].types_and_values[i]) === false)
-                    return false;
-            }
-
-            return true;
-        }
-        else
-        {
-            if(arguments[0] instanceof ArrayBuffer)
-                return org.pkijs.isEqual_buffer(this.value_before_decode, arguments[0]);
-            else
-                return false;
-        }
-
-        return false;
-    };
-    //**************************************************************************************
-    Anath.RDN.prototype.toJSON =
-    function()
-    {
-        var _object = {
-            types_and_values: new Array()
-        };
-
-        for(var i = 0; i < this.types_and_values.length; i++)
-            _object.types_and_values.push(this.types_and_values[i].toJSON());
-
-        return _object;
-    };
+/** End patch **/
 
 angular.module('anath')
     .factory('csrService', function ($q) {
@@ -142,7 +45,7 @@ angular.module('anath')
             keylength = 4096;
 
             pkcs10_simpl.version = 0;
-            pkcs10_simpl.subject = new Anath.RDN();
+            pkcs10_simpl.subject = new org.pkijs.simpl.RDN();
 
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.6",
@@ -330,17 +233,17 @@ angular.module('anath')
             };
 
             /*for(var i = 0; i < cert_simpl.issuer.types_and_values.length; i++)
-            {
-                var typeval = rdnmap[cert_simpl.issuer.types_and_values[i].type];
-                if(typeof typeval === "undefined")
-                    typeval = cert_simpl.issuer.types_and_values[i].type;
-                var subjval = cert_simpl.issuer.types_and_values[i].value.value_block.value;
-                var row = issuerTable.insertRow(issuerTable.rows.length);
-                var cell0 = row.insertCell(0);
-                cell0.innerHTML = typeval;
-                var cell1 = row.insertCell(1);
-                cell1.innerHTML = subjval;
-            }*/
+             {
+             var typeval = rdnmap[cert_simpl.issuer.types_and_values[i].type];
+             if(typeof typeval === "undefined")
+             typeval = cert_simpl.issuer.types_and_values[i].type;
+             var subjval = cert_simpl.issuer.types_and_values[i].value.value_block.value;
+             var row = issuerTable.insertRow(issuerTable.rows.length);
+             var cell0 = row.insertCell(0);
+             cell0.innerHTML = typeval;
+             var cell1 = row.insertCell(1);
+             cell1.innerHTML = subjval;
+             }*/
 
             var certInformation = {};
 
@@ -351,17 +254,17 @@ angular.module('anath')
                 var subjval = cert_simpl.subject.types_and_values[i].value.value_block.value;
                 certInformation[typeval] = subjval;
                 /*var row = subjectTable.insertRow(subjectTable.rows.length);
-                var cell0 = row.insertCell(0);
-                cell0.innerHTML = typeval;
-                var cell1 = row.insertCell(1);
-                cell1.innerHTML = subjval;*/
+                 var cell0 = row.insertCell(0);
+                 cell0.innerHTML = typeval;
+                 var cell1 = row.insertCell(1);
+                 cell1.innerHTML = subjval;*/
             }
 
             return certInformation;
 
             /*var information = {
 
-            }*/
+             }*/
         }
 
     });
