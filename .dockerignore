@@ -1,0 +1,15 @@
+# Created by .ignore support plugin (hsz.mobi)
+/e2e-tests/
+/node_modules/
+/LICENSE
+/ZublinPKI.iml
+/.jshintrc
+/bower.json
+/.bowerrc
+/.travis.yml
+/package.json
+/karma.conf.js
+/package-lock.json
+/README.md
+/docker
+!/docker/docker-entrypoint.sh
