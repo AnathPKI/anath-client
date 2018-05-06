@@ -1,4 +1,4 @@
-<md-content>
+<md-content ng-hide="ctrl.showConfirm">
     <h2>Create Certificate</h2>
     <form name="csrInformation" ng-submit="ctrl.createCSR()">
         <md-input-container>
@@ -19,5 +19,17 @@
             </md-option>
         </md-select>
         <md-button type="submit">Create</md-button>
+    </form>
+</md-content>
+
+<md-content ng-show="ctrl.showConfirm">
+    <h2>Confirm Your Request</h2>
+    <p>You should have got an e-Mail which contains a confirmation token. Please enter the token bellow.</p>
+    <form name="certConfirmation" ng-submit="ctrl.confirm()">
+        <md-input-container>
+            <label>Token</label>
+            <input type="text" ng-model="ctrl.confirmationToken">
+        </md-input-container>
+        <md-button type="submit">Send</md-button>
     </form>
 </md-content>
