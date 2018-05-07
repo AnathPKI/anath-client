@@ -88,7 +88,54 @@
                 <md-button ng-click="ctrl.userInput = {}" md-colors="{color: 'red'}" class="md-raised">Clear</md-button>
             </div>
         </form>
-    </
-    >
+    </div>
 
+
+    <div ng-show="ctrl.showCACreate">
+        <h2>Create CA</h2>
+        <form ng-submit="ctrl.createNewCA()" layout="column">
+            <div layout="row">
+                <md-select ng-model="ctrl.createCA.bits">
+                    <md-option value="1024">1024</md-option>
+                    <md-option value="2048">2048</md-option>
+                    <md-option value="4096" selected="selected">4096</md-option>
+                </md-select>
+                <md-input-container>
+                    <label>commonName</label>
+                    <input type="text" ng-model="ctrl.createCA.commonName">
+                </md-input-container>
+                <md-input-container>
+                    <label>country</label>
+                    <input type="text" ng-model="ctrl.createCA.country">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container>
+                    <label>location</label>
+                    <input type="text" ng-model="ctrl.createCA.location">
+                </md-input-container>
+                <md-input-container>
+                    <label>organization</label>
+                    <input type="text" ng-model="ctrl.createCA.organization">
+                </md-input-container>
+                <md-input-container>
+                    <label>organizationalUnit</label>
+                    <input type="text" ng-model="ctrl.createCA.organizationalUnit">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container>
+                    <label>state</label>
+                    <input type="text" ng-model="ctrl.createCA.state">
+                </md-input-container>
+                <md-input-container>
+                    <label>validDays</label>
+                    <input type="text" ng-model="ctrl.createCA.validDays">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <button type="submit">Create</button>
+            </div>
+        </form>
+    </div>
 </md-content>

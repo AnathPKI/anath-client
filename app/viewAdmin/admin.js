@@ -10,7 +10,7 @@ angular.module('anath.viewAdmin', ['ngRoute'])
         });
     }])
 
-    .controller('ViewAdminCtrl', function (UsesService, UsersService, $resource, $mdToast) {
+    .controller('ViewAdminCtrl', function (UsesService, UsersService, $resource, $mdToast, AdminService, CertificatesService) {
         var ctrl = this;
 
         /*** Begin Use functions ***/
@@ -29,7 +29,6 @@ angular.module('anath.viewAdmin', ['ngRoute'])
         };
 
         ctrl.submitUse = function () {
-            console.log(ctrl.useInput);
             if (ctrl.useInput.links !== undefined) {
                 UsesService.uses.update(ctrl.useInput, function (response) {
                     ctrl.getUses();
@@ -46,7 +45,6 @@ angular.module('anath.viewAdmin', ['ngRoute'])
         /*** Begin User functions ***/
         ctrl.getUsers = function () {
             UsersService.get({}, function (response) {
-                console.log(response);
                 ctrl.users = response.content;
             })
         };
@@ -68,6 +66,18 @@ angular.module('anath.viewAdmin', ['ngRoute'])
                     $mdToast.show($mdToast.simple().textContent('User Updated!').position("bottom"));
                 });
             }
+        };
+
+        CertificatesService.ca(
+            function (test) {
+                ctrl.showCACreate = false;
+            },
+            function () {
+                ctrl.showCACreate = true;
+            }
+        );
+        ctrl.createNewCA = function () {
+            AdminService.ca.create(ctrl.createCA);
         }
     })
 
@@ -107,4 +117,18 @@ angular.module('anath.viewAdmin', ['ngRoute'])
                 }
             )
         }
-    });
+    })
+
+.factory('AdminService', function ($resource, appConfig) {
+    return {
+        ca: $resource(appConfig.AS_BACKEND_BASE_URL, {}, {
+            create: {
+                method: "PUT",
+                headers: {
+                    "Content-Type": appConfig.ContentTypeUser,
+                    "X-Force-Content-Type": appConfig.ContentTypeUser
+                }
+            }
+        })
+    }
+})
