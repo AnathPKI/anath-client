@@ -1,21 +1,43 @@
 sudo: required
 dist: trusty
-
+services:
+- docker
 language: node_js
 node_js:
-  - '4.5'
+- '4.5'
 
-install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-  - sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-  - sudo apt-get update -q
-  - sudo apt-get install -q google-chrome-stable
+# Does not work as of yet, commenting out
+#install:
+#- export DISPLAY=:99.0
+#- sh -e /etc/init.d/xvfb start
+#- wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key
+#  add -
+#- sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable
+#  main" >> /etc/apt/sources.list.d/google-chrome.list'
+#- sudo apt-get update -q
+#- sudo apt-get install -q google-chrome-stable
+#before_script:
+#- npm install
+#script:
+#- npm run test-single-run
+#- "(npm start > /dev/null &) && (npm run protractor)"
 
-before_script:
-  - npm install
-
+# Simply install packages.
 script:
-  - npm run test-single-run
-  - (npm start > /dev/null &) && (npm run protractor)
+- npm install
+
+deploy:
+- provider: script
+  script: bash docker/docker_build_dev.sh
+  on:
+    branch: development
+  skip_cleanup: true
+- provider: script
+  script: bash docker/docker_build_release.sh
+  on:
+    tags: true
+  skip_cleanup: true
+env:
+  global:
+  - secure: "PdrEuRqt3UH0BhOjdPXfK9YLn5NO5XF+0SsO2AJZlDoSG2nVAk6uzh5y7R7hLuno0Xkyi2eWMO5QnCY0GceYJq+K2TqTmw8gUBL3lfbMFP1TmCGfE/gtL7sYsvA7fq0GZVAb1JwA8YtYgjN0X6R9a8sp5QhMkKRP0k4RDFYrxmDAnZF9zwVFcrS6Bq2S7WZhziH7tOl3LbYr+p+15Jt9NOVqx3lj8IIwCItFSGYOhLoCN0uPsezAUy1roeSODR++HV5XC7xTY0DhiUTpY+aGrOhKE1R+J2XTgyYb2vCxYmVjuCClx1aP3+XOWvg2AZ7V9kZmVoz+1q2+0A7LszGp3HF+mX2eg/Z8uQRdawtBJtPIpSOqHxHFwhYgf7tER3gT7fnxwoVqWl6pUq2l03jpwzM2Ccqrq5/jaEl4JP6tlD9BBtGCJNc5G7JeeKQvodH7d+UaS1dQ3ZK5aCqtnB6NPyqr/u0QI/eU0qcEzWqnm1G+Gf19eAl0VSrEh7FW7XTUvSUvb86bf8XMQYLKGJQOrVVHRW01FS9TPvxtL49V2FBlpV3Us2yG3+Nsdwtn+M9GrpTw+HeOJL0WMrWDMJ/9AuowwSSsKdDPjtRsUuRytL8BTNQnA6+o7dYZg5ICM50pEOhzOh09GmwHmU6WmgWXq3HvECs4/KjkoqpbcfSwB7E="
+  - secure: "tvchwjGvY6atRLz4juW7H8GLmUUtA1wpEIlHwyHBlMwz7AP83xxbc4FB5VTbaIbIJf1XsaraaKIktNM5QFRxlsxn5415vl063cQA8xrBPOJ9jERLdWGPjfzO87jYAe5rNPqgVD4r+ZmHULKSzf4enfMMwulTy/VnUkm8IVWSr+llYyqWwm0RcZYwGN2Oi7XUnN/BonzLhkN8yflRIGYHTSk9klFcFm4XM9HDvXKbiiMi69oZTLBJpkY0dLh5S7J05qi6gT80AGbqMpLG2llzOGddJNL2APO6x+bCsz+n1yjv8irwbQ9C5ag3n1XF8w97sEZ1jX29BopsyA8P3aN3HNjeBzQ3+QD6Czm2nnNRq2V09bKvGdDR4HvJEPh9CccJOur2GWyRb4cpJeC0WaY5xytX7WaJTEkVbRkU45dlfydPwTA2wHMS+cDXwldbI+TP32IM3BSoQU4O7KuLsD6MmfonWjW63rGf7rgAdOGMgbLN02XUWSNUgv1s51NNcYS25Gt6JMkyKfSwZcEzrq0TyP7p+8bZ+4AzAxfCJ2FtCk2VgwT4HyDMMEZKo6ORjwggvKkIxdQ/R/LKVzLPi5afEWEU5f1PG+2hekGYTnFsdPt6vQ25jOE/PtjGkYq1nwwh2VQuS7Kd/pE8AOW37t15GsDgtcl+azByROYUlXK3YFA="
