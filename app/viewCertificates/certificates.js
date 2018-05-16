@@ -19,7 +19,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
             });
         };
         ctrl.getCertificates();
-        
+
         ctrl.extractMail = function (text) {
             return text.replace(/^.*E=/, '').replace(/\+CN=.*$/, '');
         };
@@ -53,14 +53,14 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                 config = config.replace(/\n/g, '\r\n');
 
                 DownloadService.downloadTextFile(config, "testfile.conf")
-            }, function () { })
+            }, function () {
+            })
         }
 
         ctrl.downloadConfig = function (link, ev) {
-            $resource(link).get({}, function (response) {
+            CertificatesService.singleCertificate(link, function (response) {
                 var cert = response.cert.pem.replace(/\[object Object\]true/g, '');
                 var config = atob(response.config);
-
                 if (localStorage[response.use] === undefined) {
                     var key = appConfig.Replace_strings.KEY;
 
@@ -97,6 +97,18 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                             return data;
                         }]
                     }).then(callback, errorCallBack);
+            },
+            singleCertificate: function (link, callBack) {
+                console.log("asdad");
+                $resource(link, {}, {
+                    get: {
+                        method: 'GET',
+                        headers: {
+                            "Accept": appConfig.ContentType
+                        }
+                    }
+                }).get({}, callBack);
             }
         }
-    });
+})
+;
