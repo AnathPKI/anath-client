@@ -10,7 +10,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService, DownloadService) {
+    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService, DownloadService, pkcs12Service) {
         var ctrl = this;
 
         ctrl.getCertificates = function () {
@@ -82,6 +82,16 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                     concatConfig(key, cert, config);
                 }
             })
+        }
+
+        ctrl.exportP12 = function (link) {
+            $resource(link).get({}, function (response) {
+                var cert = response.cert.pem.replace(/\[object Object\]true/g, '');
+                if (localStorage[response.use] === undefined) {
+                    var key = appConfig.Replace_strings.KEY;
+                    pkcs12Service(cert, key, "password");
+                }
+            });
         }
     })
 
