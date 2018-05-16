@@ -53,7 +53,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                 config = config.replace(/\n/g, '\r\n');
 
                 DownloadService.downloadTextFile(config, "testfile.conf")
-            })
+            }, function () { })
         }
 
         ctrl.downloadConfig = function (link, ev) {
@@ -88,7 +88,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
     .factory('CertificatesService', function ($resource, appConfig, $http) {
         return {
             certificates: $resource(appConfig.AS_BACKEND_BASE_URL + "certificates"),
-            ca: function (callback) {
+            ca: function (callback, errorCallBack) {
                 $http(
                     {
                         url: appConfig.AS_BACKEND_BASE_URL + "ca.pem",
@@ -96,7 +96,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                         transformResponse: [function (data) {
                             return data;
                         }]
-                    }).then(callback);
+                    }).then(callback, errorCallBack);
             }
         }
     });
