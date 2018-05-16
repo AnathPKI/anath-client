@@ -256,7 +256,7 @@ angular.module('anath')
 
     })
 
-    .factory('pkcs12Service', function () {
+    .factory('pkcs12Service', function (DownloadService) {
         function stringToArrayBuffer(str) {
             /// <summary>Create an ArrayBuffer from string</summary>
             /// <param name="str" type="String">String to create ArrayBuffer from</param>
@@ -275,12 +275,12 @@ angular.module('anath')
             const keyLocalIDBuffer = new ArrayBuffer(4);
             const keyLocalIDView = new Uint8Array(keyLocalIDBuffer);
 
-            getRandomValues(keyLocalIDView);
+            org.pkijs.getRandomValues(keyLocalIDView);
 
             const certLocalIDBuffer = new ArrayBuffer(4);
             const certLocalIDView = new Uint8Array(certLocalIDBuffer);
 
-            getRandomValues(certLocalIDView);
+            org.pkijs.getRandomValues(certLocalIDView);
 
             certPEM = certPEM.replace(/(-----(BEGIN|END) CERTIFICATE-----|\n|\s|\r|\[object Object\]true)/g, '');
             var cert = atob(certPEM).toString('binary');
@@ -294,7 +294,7 @@ angular.module('anath')
             var certSimpl = new org.pkijs.simpl.CERT({schema: asn1Cert.result});
 
             var asn1Key = org.pkijs.fromBER(keyBuffer);
-            var pkcs8Simpl = new org.pkijs.simpl.KEY({schema: asn1Key.result});
+            var pkcs8Simpl = new org.pkijs.simpl.PKCS8({schema: asn1Key.result});
 
             const bitArray = new ArrayBuffer(1);
             const bitView = new Uint8Array(bitArray);
@@ -336,7 +336,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.20",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "CertBag from PKIjs"
                                                             })
                                                         ]
@@ -344,7 +344,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.21",
                                                         values: [
-                                                            new org.pkijs.asn1.OctetString({
+                                                            new org.pkijs.asn1.OCTETSTRING({
                                                                 valueHex: certLocalIDBuffer
                                                             })
                                                         ]
@@ -352,7 +352,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.3.6.1.4.1.311.17.1",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "http://www.pkijs.org"
                                                             })
                                                         ]
@@ -368,7 +368,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.20",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "CertBag from PKIjs"
                                                             })
                                                         ]
@@ -376,7 +376,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.21",
                                                         values: [
-                                                            new org.pkijs.asn1.OctetString({
+                                                            new org.pkijs.asn1.OCTETSTRING({
                                                                 valueHex: certLocalIDBuffer
                                                             })
                                                         ]
@@ -384,7 +384,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.3.6.1.4.1.311.17.1",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "http://www.pkijs.org"
                                                             })
                                                         ]
@@ -400,7 +400,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.20",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "CertBag from PKIjs"
                                                             })
                                                         ]
@@ -408,7 +408,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.21",
                                                         values: [
-                                                            new org.pkijs.asn1.OctetString({
+                                                            new org.pkijs.asn1.OCTETSTRING({
                                                                 valueHex: certLocalIDBuffer
                                                             })
                                                         ]
@@ -416,7 +416,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.3.6.1.4.1.311.17.1",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "http://www.pkijs.org"
                                                             })
                                                         ]
@@ -432,7 +432,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.20",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "CertBag from PKIjs"
                                                             })
                                                         ]
@@ -440,7 +440,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.2.840.113549.1.9.21",
                                                         values: [
-                                                            new org.pkijs.asn1.OctetString({
+                                                            new org.pkijs.asn1.OCTETSTRING({
                                                                 valueHex: certLocalIDBuffer
                                                             })
                                                         ]
@@ -448,7 +448,7 @@ angular.module('anath')
                                                     new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                                                         type: "1.3.6.1.4.1.311.17.1",
                                                         values: [
-                                                            new org.pkijs.asn1.BmpString({
+                                                            new org.pkijs.asn1.BMPSTRING({
                                                                 value: "http://www.pkijs.org"
                                                             })
                                                         ]
@@ -465,7 +465,7 @@ angular.module('anath')
             });
 
             sequence = sequence.then(function () {
-                pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
+                return pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
                     safeContents: [
                         {
                             password: passwordConverted,
@@ -482,7 +482,7 @@ angular.module('anath')
             });
 
             sequence = sequence.then(function () {
-                pkcs12.makeInternalValues({
+                return pkcs12.makeInternalValues({
                     password: passwordConverted,
                     iterations: 100000,
                     pbkdf2HashAlgorithm: "SHA-256",
@@ -491,7 +491,8 @@ angular.module('anath')
             });
 
             sequence = sequence.then(function () {
-                console.log(pkcs12.toSchema().toBER(false));
+                var blob = new Blob(new Uint8Array(pkcs12.toSchema().toBER(false)), {type: 'application/x-pkcs12'});
+                DownloadService.downloadBlob(blob, "testfile.p12");
             });
 
             return sequence;

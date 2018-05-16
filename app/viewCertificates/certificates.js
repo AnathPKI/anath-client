@@ -19,7 +19,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
             });
         };
         ctrl.getCertificates();
-        
+
         ctrl.extractMail = function (text) {
             return text.replace(/^.*E=/, '').replace(/\+CN=.*$/, '');
         };
@@ -53,14 +53,14 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                 config = config.replace(/\n/g, '\r\n');
 
                 DownloadService.downloadTextFile(config, "testfile.conf")
+            }, function () {
             })
         }
 
         ctrl.downloadConfig = function (link, ev) {
-            $resource(link).get({}, function (response) {
+            CertificatesService.singleCertificate(link, function (response) {
                 var cert = response.cert.pem.replace(/\[object Object\]true/g, '');
                 var config = atob(response.config);
-
                 if (localStorage[response.use] === undefined) {
                     var key = appConfig.Replace_strings.KEY;
 
@@ -85,11 +85,10 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         }
 
         ctrl.exportP12 = function (link) {
-            $resource(link).get({}, function (response) {
-                var cert = response.cert.pem.replace(/\[object Object\]true/g, '');
-                if (localStorage[response.use] === undefined) {
-                    var key = appConfig.Replace_strings.KEY;
-                    pkcs12Service(cert, key, "password");
+            CertificatesService.singleCertificate(link, function (response) {
+                if (localStorage[response.use] !== undefined) {
+                    var key = localStorage[response.use];
+                    pkcs12Service(response.cert.pem, key, "password");
                 }
             });
         }
@@ -98,7 +97,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
     .factory('CertificatesService', function ($resource, appConfig, $http) {
         return {
             certificates: $resource(appConfig.AS_BACKEND_BASE_URL + "certificates"),
-            ca: function (callback) {
+            ca: function (callback, errorCallBack) {
                 $http(
                     {
                         url: appConfig.AS_BACKEND_BASE_URL + "ca.pem",
@@ -106,7 +105,18 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                         transformResponse: [function (data) {
                             return data;
                         }]
-                    }).then(callback);
+                    }).then(callback, errorCallBack);
+            },
+            singleCertificate: function (link, callBack) {
+                $resource(link, {}, {
+                    get: {
+                        method: 'GET',
+                        headers: {
+                            "Accept": appConfig.ContentType
+                        }
+                    }
+                }).get({}, callBack);
             }
         }
-    });
+})
+;

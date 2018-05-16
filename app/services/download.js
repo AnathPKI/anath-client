@@ -14,6 +14,17 @@ angular.module('anath')
                 element.click();
 
                 document.body.removeChild(element);
+            },
+            downloadBlob: function (blob, filename) {
+                var element = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                element.setAttribute('href', url);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.setAttribute('download', filename);
+                element.click();
+
+                document.body.removeChild(element);
             }
         }
     });
