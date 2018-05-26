@@ -78,8 +78,8 @@ angular.module('anath.viewCertificates', ['ngRoute'])
 
                     });
                 } else {
-                    var key = localStorage[response.use];
-                    concatConfig(key, cert, config);
+                    var privKey = localStorage[response.use];
+                    concatConfig(privKey, cert, config);
                 }
             })
         }
@@ -87,8 +87,8 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         ctrl.exportP12 = function (link) {
             CertificatesService.singleCertificate(link, function (response) {
                 if (localStorage[response.use] !== undefined) {
-                    var key = localStorage[response.use];
-                    pkcs12Service(response.cert.pem, key, "password");
+                    var privateKey = localStorage[response.use];
+                    pkcs12Service(response.cert.pem, privateKey, "password");
                 }
             });
         }
