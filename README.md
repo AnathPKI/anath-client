@@ -16,7 +16,7 @@ Anath features:
 
 ## Images
 
-The whole webclient can be found on the [GitHub Releases](https://github.com/AnathPKI/anath-server/releases) page.
+The whole webclient can be found on the [GitHub Releases](https://github.com/AnathPKI/anath-client/releases) page.
 Alternatively, the [Demo repository](https://github.com/AnathPKI/demo) provides Docker Compose files to run Docker Images.
 
 ## Requirements
