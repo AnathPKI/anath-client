@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/AnathPKI/anath-client.svg?branch=master)](https://travis-ci.org/AnathPKI/anath-client)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=anath-client&metric=alert_status)](https://sonarcloud.io/dashboard?id=anath-client)
 [![Latest Release](https://github-basic-badges.herokuapp.com/release/AnathPKI/anath-client.svg)](https://github.com/AnathPKI/anath-client/releases/latest)
 
 # Bsc Thesis Reference Implementation
