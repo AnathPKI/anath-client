@@ -146,25 +146,23 @@ angular.module('anath')
                                     })
                                 }
                             ]
-                        },
+                        }
                     })
                 }
             })
 
-            /*sequence = sequence.then(function () {
+            sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.parsedValue.safeContents[0].value.safeBags[0].bagValue.makeInternalValues({
-                    safeContents: [{
-                        password: passwordConverted,
-                        contentEncryptionAlgorithm: {
-                            name: "AES-CBC",
-                            length: 128
-                        },
-                        hmacHashAlgorithm: "SHA-1",
-                        iterationCount: 100000
-                    }]
+                    password: passwordConverted,
+                    contentEncryptionAlgorithm: {
+                        name: "AES-CBC",
+                        length: 128
+                    },
+                    hmacHashAlgorithm: "SHA-1",
+                    iterationCount: 100000
                 })
 
-            });*/
+            });
 
             sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
@@ -176,7 +174,7 @@ angular.module('anath')
                         },
                         hmacHashAlgorithm: "SHA-1",
                         iterationCount: 100000
-                    },{
+                    }, {
                         password: passwordConverted,
                         contentEncryptionAlgorithm: {
                             name: "AES-CBC",
