@@ -69,7 +69,7 @@ angular.module('anath')
                         parsedValue: {
                             safeContents: [
                                 {
-                                    privacyMode: 0,
+                                    privacyMode: 1,
                                     value: new org.pkijs.simpl.pkcs12.SafeContents({
                                         safeBags: [
                                             new org.pkijs.simpl.pkcs12.SafeBag({
@@ -106,51 +106,52 @@ angular.module('anath')
                                             })
                                         ]
                                     })
+                                }, {
+                                    privacyMode: 1,
+                                    value: new org.pkijs.simpl.pkcs12.SafeContents({
+                                        safeBags: [
+                                            new org.pkijs.simpl.pkcs12.SafeBag({
+                                                bagId: "1.2.840.113549.1.12.10.1.3",
+                                                bagValue: new org.pkijs.simpl.pkcs12.CertBag({
+                                                    parsedValue: certSimpl
+                                                }),
+                                                bagAttributes: [
+                                                    new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                                                        type: "1.2.840.113549.1.9.20",
+                                                        values: [
+                                                            new org.pkijs.asn1.BMPSTRING({
+                                                                value: "CertBag from PKIjs"
+                                                            })
+                                                        ]
+                                                    }),
+                                                    new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                                                        type: "1.2.840.113549.1.9.21",
+                                                        values: [
+                                                            new org.pkijs.asn1.OCTETSTRING({
+                                                                valueHex: certLocalIDBuffer
+                                                            })
+                                                        ]
+                                                    }),
+                                                    new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
+                                                        type: "1.3.6.1.4.1.311.17.1",
+                                                        values: [
+                                                            new org.pkijs.asn1.BMPSTRING({
+                                                                value: "http://www.pkijs.org"
+                                                            })
+                                                        ]
+                                                    })
+                                                ]
+                                            })
+                                        ]
+                                    })
                                 }
                             ]
                         },
-                        privacyMode: 1,
-                        value: new org.pkijs.simpl.pkcs12.SafeContents({
-                            safeBags: [
-                                new org.pkijs.simpl.pkcs12.SafeBag({
-                                    bagId: "1.2.840.113549.1.12.10.1.3",
-                                    bagValue: new org.pkijs.simpl.pkcs12.CertBag({
-                                        parsedValue: certSimpl
-                                    }),
-                                    bagAttributes: [
-                                        new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
-                                            type: "1.2.840.113549.1.9.20",
-                                            values: [
-                                                new org.pkijs.asn1.BMPSTRING({
-                                                    value: "CertBag from PKIjs"
-                                                })
-                                            ]
-                                        }),
-                                        new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
-                                            type: "1.2.840.113549.1.9.21",
-                                            values: [
-                                                new org.pkijs.asn1.OCTETSTRING({
-                                                    valueHex: certLocalIDBuffer
-                                                })
-                                            ]
-                                        }),
-                                        new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
-                                            type: "1.3.6.1.4.1.311.17.1",
-                                            values: [
-                                                new org.pkijs.asn1.BMPSTRING({
-                                                    value: "http://www.pkijs.org"
-                                                })
-                                            ]
-                                        })
-                                    ]
-                                })
-                            ]
-                        })
                     })
                 }
             })
 
-            sequence = sequence.then(function () {
+            /*sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.parsedValue.safeContents[0].value.safeBags[0].bagValue.makeInternalValues({
                     safeContents: [{
                         password: passwordConverted,
@@ -163,11 +164,19 @@ angular.module('anath')
                     }]
                 })
 
-            });
+            });*/
 
             sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
                     safeContents: [{
+                        password: passwordConverted,
+                        contentEncryptionAlgorithm: {
+                            name: "AES-CBC",
+                            length: 128
+                        },
+                        hmacHashAlgorithm: "SHA-1",
+                        iterationCount: 100000
+                    },{
                         password: passwordConverted,
                         contentEncryptionAlgorithm: {
                             name: "AES-CBC",
@@ -194,7 +203,7 @@ angular.module('anath')
                 var p12BER = p12Schema.toBER(false);
                 var p12Uint = new Uint8Array(p12BER);
                 console.log(p12Uint);
-                var blob = new Blob(p12Uint, {type: 'application/x-pkcs12'});
+                var blob = new Blob([p12Uint], {type: 'application/x-pkcs12'});
                 DownloadService.downloadBlob(blob, "testfile.p12");
             });
 
