@@ -69,7 +69,7 @@ angular.module('anath')
                         parsedValue: {
                             safeContents: [
                                 {
-                                    privacyMode: 1,
+                                    privacyMode: 0,
                                     value: new org.pkijs.simpl.pkcs12.SafeContents({
                                         safeBags: [
                                             new org.pkijs.simpl.pkcs12.SafeBag({
@@ -166,15 +166,7 @@ angular.module('anath')
 
             sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
-                    safeContents: [{
-                        password: passwordConverted,
-                        contentEncryptionAlgorithm: {
-                            name: "AES-CBC",
-                            length: 128
-                        },
-                        hmacHashAlgorithm: "SHA-1",
-                        iterationCount: 100000
-                    }, {
+                    safeContents: [{},{
                         password: passwordConverted,
                         contentEncryptionAlgorithm: {
                             name: "AES-CBC",
