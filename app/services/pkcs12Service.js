@@ -192,8 +192,7 @@ angular.module('anath')
                 var p12Schema = pkcs12.toSchema();
                 var p12BER = p12Schema.toBER(false);
                 var p12Uint = new Uint8Array(p12BER);
-                console.log(p12Uint);
-                var blob = new Blob([p12Uint], {type: 'application/x-pkcs12'});
+                var blob = new Blob([p12BER], {type: 'application/x-pkcs12'});
                 DownloadService.downloadBlob(blob, "testfile.p12");
             });
 
