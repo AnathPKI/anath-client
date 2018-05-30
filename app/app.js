@@ -39,8 +39,8 @@ angular.module('anath', [
     .decorator('$httpBackend', ['$delegate', 'appConfig', function($delegate, appConfig) {
         return function() {
             var headers = arguments[4];
-            var contentType = (headers != null ? headers['X-Force-Content-Type'] : void 0);
-            if (contentType != null && headers['Content-Type'] == null) {
+            var contentType = (headers !== null ? headers['X-Force-Content-Type'] : void 0);
+            if (contentType !== null && headers !== null &&headers['Content-Type'] === null) {
                 headers['Content-Type'] = contentType;
             }
             return $delegate.apply(null, arguments);

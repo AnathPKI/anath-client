@@ -1449,8 +1449,11 @@ function(in_window)
 
         for(var i = 0; i < this.value.length; i++)
         {
-            var value_buf = this.value[i].toBER(size_only);
-            ret_buf = util_concatbuf(ret_buf, value_buf);
+            ////////////// Patched bei Martin Wittwer mawit/wittwma1
+            if(this.value[i].toBER && {}.toString.call(this.value[i].toBER) === '[object Function]') {
+                var value_buf = this.value[i].toBER(size_only);
+                ret_buf = util_concatbuf(ret_buf, value_buf);
+            }
         }
 
         return ret_buf;

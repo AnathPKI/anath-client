@@ -112,7 +112,16 @@ angular.module('anath.viewAdmin', ['ngRoute'])
                     "key": "@key"
                 }, {
                     update: {
-                        method: "PUT"
+                        method: "PUT",
+                        "Content-Type": appConfig.ContentTypeUser,
+                        "X-Force-Content-Type": appConfig.ContentTypeUser
+                    },
+                    save: {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": appConfig.ContentTypeUser,
+                            "X-Force-Content-Type": appConfig.ContentTypeUser
+                        }
                     }
                 }
             )
