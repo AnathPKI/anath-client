@@ -15,12 +15,14 @@ angular.module('anath.viewLogin', ['ngRoute'])
         var ctrl = this;
 
         ctrl.login = function () {
+            $rootScope.showProgress = true;
             AuthenticationService.login(ctrl.username, ctrl.password, function (success) {
                 if(success) {
                     $window.location.href = "/";
                 } else {
                     ctrl.error = true;
                 }
+                $rootScope.showProgress = false;
             })
         }
     });

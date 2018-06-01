@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{title}}</title>
+    <title ng-cloak>{{title}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<md-toolbar class="md-tall md-whiteframe-5dp">
+<md-toolbar class="md-tall md-whiteframe-5dp" ng-cloak>
     <div layout="row">
         <h1 class="md-toolbar-tools">{{title}}</h1>
 
@@ -29,7 +29,7 @@
             <md-menu ng-controller="UserMenuCtrl">
       <md-button aria-label="Open user menu"
                  ng-click="$mdMenu.open($event)">
-        {{userName}}
+        {{userName}} <md-icon class="mi mi-arrow-drop-down mi-24"></md-icon>
       </md-button>
       <md-menu-content>
         <md-menu-item>
@@ -45,8 +45,8 @@
     <div class="md-toolbar-tools" ng-hide="showLogin">
         <span flex></span>
         <md-button ng-show="admin" href="#!/Admin" aria-label="Admin Area button">Admin Area</md-button>
-        <md-button href="#!/Certificates" aria-label="Go to My Certificates" class="md-primary md-raised">My
-            Certificates
+        <md-button href="#!/Certificates" aria-label="Go to My Certificates" class="md-primary md-raised">
+            Certificates List
         </md-button>
         <md-button href="#!/Create" aria-label="Create new certificate" class="md-raised">
             Create Certificate
@@ -54,6 +54,7 @@
     </div>
 
 </md-toolbar>
+<md-progress-linear ng-disabled="!showProgress"></md-progress-linear>
 
 
 <!--[if lt IE 7]>

@@ -18,9 +18,9 @@ angular.module('anath', [
         'ContentType': 'application/vnd.anath.v1+json',
         'ContentTypeUser': 'application/vnd.anath.extension.v1+json',
         Replace_strings: {
-            CA: "[[CERT_CA]]",
-            CRT: "[[CERT_CRT]]",
-            KEY: "[[CERT_KEY]]"
+            CA: "${caCertificate}",
+            CRT: "${userCertificate}",
+            KEY: "${userPrivateKey}"
         }
     })
 
