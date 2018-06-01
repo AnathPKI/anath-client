@@ -13,6 +13,7 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
     .controller('ViewCreateCertificateCtrl', function (CreateService, CertificatesService, $location, csrService, UserService, parseCert) {
         var ctrl = this;
 
+        ctrl.showConfirm = false;
         ctrl.newCert = {};
 
         UserService(function (user) {
@@ -48,16 +49,33 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
                     use: ctrl.newCert.use.use
                 }, function (response) {
                     console.log(response);
-                    $location.path("/Certificates");
+                    if(response.noLaterThan !== undefined) {
+                        ctrl.showConfirm = true;
+                    } else {
+                        $location.path("/Certificates");
+                    }
                 })
             }, function (key) {
                 localStorage[ctrl.newCert.use.use] = key;
+            });
+        }
+
+        ctrl.confirm = function () {
+            CreateService.confirm.do({ token: ctrl.confirmationToken }, function () {
+                $location.path("/Certificates");
             });
         }
     })
 
     .factory('CreateService', function ($resource, appConfig) {
         return {
-            uses: $resource(appConfig.AS_BACKEND_BASE_URL + "uses")
+            uses: $resource(appConfig.AS_BACKEND_BASE_URL + "uses"),
+            confirm: $resource(appConfig.AS_BACKEND_BASE_URL + "certificates/confirm/:token", {
+                "token": "@token"
+            }, {
+                do: {
+                    method: "PUT"
+                }
+            })
         }
     });

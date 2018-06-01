@@ -232,19 +232,6 @@ angular.module('anath')
                 "1.2.840.113549.1.9.1": "E-mail"
             };
 
-            /*for(var i = 0; i < cert_simpl.issuer.types_and_values.length; i++)
-             {
-             var typeval = rdnmap[cert_simpl.issuer.types_and_values[i].type];
-             if(typeof typeval === "undefined")
-             typeval = cert_simpl.issuer.types_and_values[i].type;
-             var subjval = cert_simpl.issuer.types_and_values[i].value.value_block.value;
-             var row = issuerTable.insertRow(issuerTable.rows.length);
-             var cell0 = row.insertCell(0);
-             cell0.innerHTML = typeval;
-             var cell1 = row.insertCell(1);
-             cell1.innerHTML = subjval;
-             }*/
-
             var certInformation = {};
 
             for (var i = 0; i < cert_simpl.subject.types_and_values.length; i++) {

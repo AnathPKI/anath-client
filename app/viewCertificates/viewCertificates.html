@@ -27,7 +27,7 @@
                     <md-icon class="mi mi-file-download mi-24"></md-icon>
                     <md-tooltip>Download the the configuration with certificates and key</md-tooltip>
                 </md-button>
-                <md-button class="md-icon-button" href="{{cert.links[1].href}}">
+                <md-button class="md-icon-button" ng-click="ctrl.exportP12(cert.links[0].href, $event)">
                     <md-icon class="mi mi-file-download mi-24"></md-icon>
                     <md-tooltip>Download the certificate as PEM File</md-tooltip>
                 </md-button>
