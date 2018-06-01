@@ -29,11 +29,11 @@
             <md-menu ng-controller="UserMenuCtrl">
       <md-button aria-label="Open user menu"
                  ng-click="$mdMenu.open($event)">
-        {{userName}} <md-icon class="mi mi-arrow-drop-down mi-24"></md-icon>
+        {{userName}} <md-icon class="mi mi-arrow-drop-down mi-24" id="userMenu"></md-icon>
       </md-button>
       <md-menu-content>
         <md-menu-item>
-          <md-button ng-click="logout()">
+          <md-button ng-click="logout()" id="logoutButton">
             Logout
           </md-button>
         </md-menu-item>

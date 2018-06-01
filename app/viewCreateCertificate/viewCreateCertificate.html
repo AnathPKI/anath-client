@@ -14,11 +14,11 @@
             <label>E-Mail</label>
         </md-input-container>
         <md-select ng-model="ctrl.newCert.use" placeholder="Use of the certificate" required="required">
-            <md-option ng-repeat="use in ctrl.uses" ng-value="use">
+            <md-option ng-repeat="use in ctrl.uses" id="{{use.use}}" ng-value="use">
                 {{use.use}}
             </md-option>
         </md-select>
-        <md-button type="submit">Create</md-button>
+        <md-button type="submit" id="createButton">Create</md-button>
     </form>
 </md-content>
 

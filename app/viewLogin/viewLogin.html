@@ -5,14 +5,14 @@
             <md-input-container flex>
                 <label>Username</label>
                 <input type="email" ng-model="ctrl.username" flex="100" required>
-                <div ng-messages="" role="alert" ng-show="ctrl.error">
+                <div ng-messages="" id="loginAlertUser" role="alert" ng-show="ctrl.error">
                     Please check the username
                 </div>
             </md-input-container>
             <md-input-container flex>
                 <label>Password</label>
                 <input type="password" ng-model="ctrl.password" flex required>
-                <div ng-messages="" role="alert" ng-show="ctrl.error">
+                <div ng-messages="" id="loginAlertPW" role="alert" ng-show="ctrl.error">
                     Please check the password
                 </div>
             </md-input-container>
