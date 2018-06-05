@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('anath')
+
+    /** Service to create a PKCS#12 encoded export **/
     .factory('pkcs12Service', function (DownloadService) {
         function stringToArrayBuffer(str) {
             /// <summary>Create an ArrayBuffer from string</summary>
@@ -13,6 +15,7 @@ angular.module('anath')
             return resultBuffer;
         }
 
+        /** Decode base64 **/
         function fromBase64(input) {
             var base64Template = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
             var useUrlTemplate = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
@@ -73,11 +76,10 @@ angular.module('anath')
             return output;
         }
 
-
-        // Old version
         return function (certPEM, keyPEM, password) {
             var sequence = Promise.resolve();
 
+            /** Begin: Decode PEM and create p8 and cert objects **/
             const keyLocalIDBuffer = new ArrayBuffer(4);
             const keyLocalIDView = new Uint8Array(keyLocalIDBuffer);
 
@@ -101,6 +103,7 @@ angular.module('anath')
 
             var asn1Key = org.pkijs.fromBER(keyBuffer);
             var pkcs8Simpl = new org.pkijs.simpl.PKCS8({schema: asn1Key.result});
+            /** End decode **/
 
             const bitArray = new ArrayBuffer(1);
             const bitView = new Uint8Array(bitArray);
@@ -123,6 +126,7 @@ angular.module('anath')
                 })
             ];
 
+            /** Create p12 from certSimpl and pkcs8Simpl **/
             var pkcs12 = new org.pkijs.simpl.PFX({
                 parsedValue: {
                     integrityMode: 0,
@@ -172,7 +176,7 @@ angular.module('anath')
                         }
                     })
                 }
-            })
+            });
 
             sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.parsedValue.safeContents[0].value.safeBags[0].bagValue.makeInternalValues({
@@ -187,6 +191,7 @@ angular.module('anath')
 
             });
 
+            /** Begin: Encrypt private key **/
             sequence = sequence.then(function () {
                 return pkcs12.parsedValue.authenticatedSafe.makeInternalValues({
                     safeContents: [{}, {
@@ -201,7 +206,6 @@ angular.module('anath')
                 })
 
             });
-
             sequence = sequence.then(function () {
                 return pkcs12.makeInternalValues({
                     password: passwordConverted,
@@ -210,7 +214,9 @@ angular.module('anath')
                     hmacHashAlgorithm: "SHA-256"
                 })
             });
+            /** End encryption section **/
 
+            /** Create blob and call download method **/
             sequence = sequence.then(function () {
                 var p12Schema = pkcs12.toSchema();
                 var p12BER = p12Schema.toBER(false);

@@ -1,5 +1,6 @@
 angular.module('anath')
 
+    /** Service to handle userinformation **/
     .factory('UserService', function ($resource, appConfig) {
         var user;
         
@@ -17,6 +18,7 @@ angular.module('anath')
         }
     })
 
+    /** Service to authenticate a user **/
     .factory('AuthenticationService', function ($http, $resource, appConfig, $location) {
         var service = {};
 
