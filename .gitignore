@@ -6,3 +6,5 @@ tmp
 .DS_Store
 .idea
 ZublinPKI.iml
+npm-debug.log*
+.scannerwork/
