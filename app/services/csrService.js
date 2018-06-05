@@ -28,6 +28,8 @@ org.pkijs.simpl.RDN.prototype.toSchema =
 /** End patch **/
 
 angular.module('anath')
+
+    /** Service to create private key and CSR **/
     .factory('csrService', function ($q) {
 
         return function (country, state, city, o, ou, desc, mail, cn, callBackCSR, callBackKey) {
@@ -41,12 +43,12 @@ angular.module('anath')
 
             var signature_algorithm_name, keylength;
             signature_algorithm_name = "RSASSA-PKCS1-V1_5";
-            //signature_algorithm_name = "SHA256 with RSA";
             keylength = 4096;
 
             pkcs10_simpl.version = 0;
             pkcs10_simpl.subject = new org.pkijs.simpl.RDN();
 
+            /** Begin: Define subjects **/
             pkcs10_simpl.subject.types_and_values.push(new org.pkijs.simpl.ATTR_TYPE_AND_VALUE({
                 type: "2.5.4.6",
                 value: new org.pkijs.asn1.PRINTABLESTRING({
@@ -95,8 +97,11 @@ angular.module('anath')
                     value: cn
                 })
             }));
+            /** End: Define subjects **/
+
             pkcs10_simpl.attributes = [];
 
+            /** Generate key pair **/
             sequence = sequence.then(function () {
                 var algorithm = org.pkijs.getAlgorithmParameters(signature_algorithm_name, "generatekey");
                 algorithm.algorithm.hash.name = hash_algorithm;
@@ -106,6 +111,7 @@ angular.module('anath')
                 return crypto.generateKey(algorithm.algorithm, true, algorithm.usages);
             });
 
+            /** Extract public and private key **/
             sequence = sequence.then(function (keyPair) {
                 publicKey = keyPair.publicKey;
                 privateKey = keyPair.privateKey;
@@ -117,6 +123,7 @@ angular.module('anath')
                 return pkcs10_simpl.subjectPublicKeyInfo.importKey(publicKey);
             });
 
+            /** Generate CSR **/
             sequence = sequence.then(function (result) {
                 return crypto.digest({
                     name: "SHA-256"
@@ -138,10 +145,12 @@ angular.module('anath')
                 }));
             });
 
+            /** Sign CSR with private key **/
             sequence = sequence.then(function () {
                 return pkcs10_simpl.sign(privateKey, hash_algorithm);
             });
 
+            /** Encode CSR as base64 **/
             sequence.then(function () {
                 var pkcs10_schema = pkcs10_simpl.toSchema();
                 var pkcs10_encoded = pkcs10_schema.toBER(false);
@@ -156,6 +165,7 @@ angular.module('anath')
                 return crypto.exportKey("pkcs8", privateKey);
             });
 
+            /** Encode private key as base64 **/
             sequence.then(function (result) {
                 var private_key_string = String.fromCharCode.apply(null, new Uint8Array(result));
                 var result_string = "\r\n-----BEGIN PRIVATE KEY-----\r\n";
@@ -165,8 +175,9 @@ angular.module('anath')
             });
 
             return deferred.promise;
-        }
+        };
 
+        /** Add new lines to bas64 encoded string **/
         function formatPEM(pem_string) {
             var string_length = pem_string.length;
             var result_string = "";
@@ -196,6 +207,7 @@ angular.module('anath')
 
     })
 
+    /** Service to parse a pem certificate and get subject of it **/
     .factory('parseCert', function () {
 
         function stringToArrayBuffer(str) {
@@ -240,18 +252,9 @@ angular.module('anath')
                     typeval = cert_simpl.subject.types_and_values[i].type;
                 var subjval = cert_simpl.subject.types_and_values[i].value.value_block.value;
                 certInformation[typeval] = subjval;
-                /*var row = subjectTable.insertRow(subjectTable.rows.length);
-                 var cell0 = row.insertCell(0);
-                 cell0.innerHTML = typeval;
-                 var cell1 = row.insertCell(1);
-                 cell1.innerHTML = subjval;*/
             }
 
             return certInformation;
-
-            /*var information = {
-
-             }*/
         }
 
     });

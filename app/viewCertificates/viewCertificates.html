@@ -1,7 +1,8 @@
 <md-content>
     <div layout="row">
-        <h2>My Certificates</h2>
-        <md-button ng-click="valid = !valid" ng-init="valid=true">Display Revoked <md-icon class="mi mi-filter-list"></md-icon> </md-button>
+        <h2>Certificates List</h2>
+        <md-button ng-click="valid = !valid" ng-init="valid=true" ng-show="valid">Show Revoked <md-icon class="mi mi-filter-list"></md-icon> </md-button>
+        <md-button ng-click="valid = !valid" ng-init="valid=true" ng-hide="valid">Show Valid <md-icon class="mi mi-filter-list"></md-icon> </md-button>
     </div>
     <md-list>
 
@@ -15,26 +16,29 @@
             No certificates created yet! <md-button ng-href="#!/Create" class="md-whiteframe-1dp md-raised">Create the first one</md-button>
             <md-divider></md-divider>
         </md-list-item>
-        <md-list-item ng-repeat="cert in ctrl.certificates" ng-show="cert.valid == valid || cert.valid">
+        <md-list-item ng-repeat="cert in ctrl.certificates" ng-show="cert.valid == valid" class="certificateItem">
             <span flex="20">
                 {{cert.use}}
             </span>
             <span flex="20" ng-show="admin">
                 {{ctrl.extractMail(cert.subject)}}
             </span>
-            <div ng-show="cert.valid">
-                <md-button class="md-icon-button" ng-click="ctrl.downloadConfig(cert.links[0].href, $event)">
+            <div ng-show="cert.valid" class="validCertificateItem">
+                <md-button class="md-icon-button configDownloadButton" ng-click="ctrl.downloadConfig(cert.links[0].href, $event)">
                     <md-icon class="mi mi-file-download mi-24"></md-icon>
                     <md-tooltip>Download the the configuration with certificates and key</md-tooltip>
                 </md-button>
-                <md-button class="md-icon-button" ng-click="ctrl.exportP12(cert.links[0].href, $event)">
+                <md-button class="md-icon-button exportButton" ng-click="ctrl.exportP12(cert.links[0].href, $event)">
                     <md-icon class="mi mi-file-download mi-24"></md-icon>
-                    <md-tooltip>Download the certificate as PEM File</md-tooltip>
+                    <md-tooltip>Export certificate and private certificate as .p12 file. (For example to use for S/MIME)</md-tooltip>
                 </md-button>
-                <md-button class="md-icon-button" ng-click="ctrl.revokeCert(cert.links[2], $event)">
+                <md-button class="md-icon-button revokeButton" ng-click="ctrl.revokeCert(cert.links[2], $event)">
                     <md-icon class="mi mi-delete mi-24" style="color: red;"></md-icon>
                     <md-tooltip>Revoke (disable) this certificate</md-tooltip>
                 </md-button>
+            </div>
+            <div ng-show="!cert.valid">
+                Invalid Certificate
             </div>
             <md-divider></md-divider>
         </md-list-item>
