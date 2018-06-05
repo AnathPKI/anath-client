@@ -10,7 +10,7 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService, DownloadService) {
+    .controller('ViewCertificatesCtrl', function (CertificatesService, $mdDialog, $resource, appConfig, UserService, DownloadService, pkcs12Service) {
         var ctrl = this;
 
         ctrl.getCertificates = function () {
@@ -45,16 +45,13 @@ angular.module('anath.viewCertificates', ['ngRoute'])
         };
 
         function concatConfig(key, cert, config) {
-            CertificatesService.ca(function (response) {
 
-                config = config.replace(appConfig.Replace_strings.CA, response.data);
-                config = config.replace(appConfig.Replace_strings.CRT, cert);
-                config = config.replace(appConfig.Replace_strings.KEY, key);
-                config = config.replace(/\n/g, '\r\n');
+            console.log(key);
+            config = config.replace(appConfig.Replace_strings.CRT, cert);
+            config = config.replace(appConfig.Replace_strings.KEY, key);
+            config = config.replace(/\n/g, '\r\n');
 
-                DownloadService.downloadTextFile(config, "testfile.conf")
-            }, function () {
-            })
+            DownloadService.downloadTextFile(config, "testfile.conf");
         }
 
         ctrl.downloadConfig = function (link, ev) {
@@ -78,10 +75,44 @@ angular.module('anath.viewCertificates', ['ngRoute'])
 
                     });
                 } else {
-                    var key = localStorage[response.use];
-                    concatConfig(key, cert, config);
+                    var privKey = localStorage[response.use];
+                    concatConfig(privKey, cert, config);
                 }
             })
+        };
+
+        ctrl.exportP12 = function (link, event) {
+            CertificatesService.singleCertificate(link, function (response) {
+                if (localStorage[response.use] === undefined) {
+
+                    $mdDialog.show(
+                        $mdDialog.alert()
+                            .title('The key is not available')
+                            .textContent('The private key for this certificate is not available. An export is not possible.')
+                            .ariaLabel('Export not possible')
+                            .ok('OK')
+                            .targetEvent(event)
+                    );
+                } else {
+                    var confirm = $mdDialog.prompt()
+                        .title('What would you name your dog?')
+                        .textContent('This export contains your private key. So please choose a password and be careful with the downloaded file!')
+                        .placeholder('Password')
+                        .ariaLabel('PKCS12 Password')
+                        .initialValue('')
+                        .targetEvent(event)
+                        .required(true)
+                        .ok('Okay!')
+                        .cancel('Cancel');
+
+                    $mdDialog.show(confirm).then(function (password) {
+                        var privateKey = localStorage[response.use];
+                        pkcs12Service(response.cert.pem, privateKey, password);
+                    }, function () {
+                    });
+
+                }
+            });
         }
     })
 
@@ -99,7 +130,6 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                     }).then(callback, errorCallBack);
             },
             singleCertificate: function (link, callBack) {
-                console.log("asdad");
                 $resource(link, {}, {
                     get: {
                         method: 'GET',
@@ -110,5 +140,5 @@ angular.module('anath.viewCertificates', ['ngRoute'])
                 }).get({}, callBack);
             }
         }
-})
+    })
 ;

@@ -22,8 +22,16 @@ node_js:
 #- npm run test-single-run
 #- "(npm start > /dev/null &) && (npm run protractor)"
 
+addons:
+  sonarcloud:
+    organization: anath
+    token:
+      secure: "d93uoVh3dRKnEPHDmjQyvfeDd8gYVhJhKdEDUsCqjN1ky863vKA1GZQYBJNeq5PfMjt8XxSWlaRfOunTvcTNbXUZApufD8ku4ciENLxIrs5JHoAhx+zwhej+++hdme1HVBdMGvV/OfAjGA1bXOZl8sDasbExFu0WNJ+fT10zrW6HfF6Fcw5lilDO0v1kH08FpfFUg8rTS8qYRupDZ37NGcJzpW5pL/2x1UXsROBZsT/vQn9auMsH83CHMuAZwQSSDeqzhY+6p2lwqQbf25sZ/NnoNzlICFgX0Y2p0eV++spKfD+IPZgdoLllrDBsPwJL1BGYuDTJLJgzhRWiavCrt3PITF/ncSSxsOq+7BcuE/C9pgzFaRFD5KOFZ64VexN3YvjxaMN5n4YCOVcK0N0awm33CeD/Z7UTgbu4SG/QLgkMJAo5Za/sRjmaAUPgKVKX0PiOIQNMxHEWJVajqmZKudTcHc5CjT6vJyFiO2sYs0IbNxy5pnvGDEA+bhRvJu54oWXoiAiFAB57wRUogepr7JK4Aej0fxPjshzZdA3opQOsTw6AjXz92acTf5KKhkW/AI/JsibJfk3Y+DvdIS2/6+0TXITdDPdLRwX41JEbNowHjOEvI+oLiucwOIyHXJZj9mgpyhG3PNOVaopU0y0Rng+W/uWMHUg5abLXqxnrdTM="
+
+
 # Simply install packages.
 script:
+- sonar-scanner
 - npm install
 
 deploy:

@@ -1,6 +1,6 @@
 <md-content>
 
-    <h2 ng-click="showUses = !showUses" ng-init="showUses = false">
+    <h2 ng-click="showUses = !showUses" ng-init="showUses = false" id="toggelUses">
         Uses:
         <md-icon class="mi mi-arrow-drop-down" ng-hide="showUses"></md-icon>
         <md-icon class="mi mi-arrow-drop-up" ng-show="showUses"></md-icon>
@@ -9,7 +9,7 @@
         <md-list>
             <md-list-item class="md-title">Use</md-list-item>
             <md-divider></md-divider>
-            <md-list-item ng-repeat="use in ctrl.uses" ng-click="ctrl.getSingleUse(use.links[1].href)">
+            <md-list-item ng-repeat="use in ctrl.uses" ng-click="ctrl.getSingleUse(use.links[1].href)" class="useItem">
                 {{use.use}}
                 <md-divider></md-divider>
             </md-list-item>
@@ -32,7 +32,7 @@
                 </md-input-container>
             </div>
             <div layout="row">
-                <md-button type="submit" class="md-primary md-raised">Save</md-button>
+                <md-button type="submit" class="md-primary md-raised" id="saveUseButton">Save</md-button>
                 <md-button ng-click="ctrl.useInput = {}" md-colors="{color: 'red'}" class="md-raised">Clear</md-button>
             </div>
         </form>
@@ -49,7 +49,7 @@
                 <span class="md-title" flex="5">ID</span><span class="md-title">Username/E-Mail</span>
                 <md-divider></md-divider>
             </md-list-item>
-            <md-list-item ng-repeat="user in ctrl.users | orderBy:'id'" ng-click="ctrl.getSingleUser(user)">
+            <md-list-item ng-repeat="user in ctrl.users | orderBy:'id'" ng-click="ctrl.getSingleUser(user)" class="userItem">
                 <span flex="5">{{user.id}}</span>{{user.email}}
                 <md-divider></md-divider>
             </md-list-item>
@@ -84,7 +84,7 @@
                 </md-input-container>
             </div>
             <div layout="row">
-                <md-button type="submit" class="md-primary md-raised">Save</md-button>
+                <md-button type="submit" class="md-primary md-raised" id="saveUserButton">Save</md-button>
                 <md-button ng-click="ctrl.userInput = {}" md-colors="{color: 'red'}" class="md-raised">Clear</md-button>
             </div>
         </form>

@@ -10,21 +10,18 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{title}}</title>
+    <title ng-cloak>{{title}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">-->
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="app.css">
-    <!--<script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="bower_components/material-icons/css/material-icons.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 </head>
 <body>
 
-<md-toolbar class="md-tall md-whiteframe-5dp">
+<md-toolbar class="md-tall md-whiteframe-5dp" ng-cloak>
     <div layout="row">
         <h1 class="md-toolbar-tools">{{title}}</h1>
 
@@ -32,11 +29,11 @@
             <md-menu ng-controller="UserMenuCtrl">
       <md-button aria-label="Open user menu"
                  ng-click="$mdMenu.open($event)">
-        {{userName}}
+        {{userName}} <md-icon class="mi mi-arrow-drop-down mi-24" id="userMenu"></md-icon>
       </md-button>
       <md-menu-content>
         <md-menu-item>
-          <md-button ng-click="logout()">
+          <md-button ng-click="logout()" id="logoutButton">
             Logout
           </md-button>
         </md-menu-item>
@@ -48,8 +45,8 @@
     <div class="md-toolbar-tools" ng-hide="showLogin">
         <span flex></span>
         <md-button ng-show="admin" href="#!/Admin" aria-label="Admin Area button">Admin Area</md-button>
-        <md-button href="#!/Certificates" aria-label="Go to My Certificates" class="md-primary md-raised">My
-            Certificates
+        <md-button href="#!/Certificates" aria-label="Go to My Certificates" class="md-primary md-raised">
+            Certificates List
         </md-button>
         <md-button href="#!/Create" aria-label="Create new certificate" class="md-raised">
             Create Certificate
@@ -57,6 +54,7 @@
     </div>
 
 </md-toolbar>
+<md-progress-linear ng-disabled="!showProgress"></md-progress-linear>
 
 
 <!--[if lt IE 7]>
@@ -66,9 +64,7 @@
 
 <div ng-view layout-padding></div>
 
-<!-- In production use:
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
--->
+
 <script src="bower_components/promiz/promiz.min.js"></script>
 <script src="bower_components/webcrypto-shim/webcrypto-shim.min.js"></script>
 <script src="bower_components/angular/angular.js"></script>
@@ -85,8 +81,13 @@
 <script src="lib/asn1.js"></script>
 <script src="bower_components/pkijs/org/pkijs/x509_schema.js" type="text/javascript"></script>
 <script src="bower_components/pkijs/org/pkijs/x509_simpl.js"></script>
+<script src="bower_components/pkijs/org/pkijs/cms_schema.js"></script>
+<script src="bower_components/pkijs/org/pkijs/cms_simpl.js"></script>
+<script src="bower_components/pkijs/org/pkijs/pkcs12_schema.js"></script>
+<script src="bower_components/pkijs/org/pkijs/pkcs12_simpl.js"></script>
 <script src="app.js"></script>
 <script src="services/user.js"></script>
+<script src="services/pkcs12Service.js"></script>
 <script src="services/csrService.js"></script>
 <script src="services/download.js"></script>
 <script src="viewCertificates/certificates.js"></script>
