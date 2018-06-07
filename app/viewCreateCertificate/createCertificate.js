@@ -10,7 +10,7 @@ angular.module('anath.viewCreateCertificate', ['ngRoute'])
         });
     }])
 
-    .controller('ViewCreateCertificateCtrl', function (CreateService, CertificatesService, $location, certService, UserService, parseCert) {
+    .controller('ViewCreateCertificateCtrl', function (CreateService, CertificatesService, $location, csrService, UserService, parseCert) {
         var ctrl = this;
 
         ctrl.showConfirm = false;
