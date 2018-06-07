@@ -7,9 +7,9 @@
     <md-list>
 
         <md-list-item>
-            <span class="md-title" flex="25">Use</span>
+            <span class="md-title" flex="50" flex-gt-md="25">Use</span>
             <span class="md-title" flex="20" ng-show="admin">User</span>
-            <span flex="20">Actions</span>
+            <span flex="50" flex-gt-md="20">Actions</span>
         </md-list-item>
         <md-divider></md-divider>
         <md-list-item ng-show="ctrl.certificates.length === 0">
@@ -17,7 +17,7 @@
             <md-divider></md-divider>
         </md-list-item>
         <md-list-item ng-repeat="cert in ctrl.certificates" ng-show="cert.valid == valid" class="certificateItem">
-            <span flex="20">
+            <span flex="50" flex-gt-md="25">
                 {{cert.use}}
             </span>
             <span flex="20" ng-show="admin">
