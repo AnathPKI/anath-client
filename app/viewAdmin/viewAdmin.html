@@ -46,7 +46,7 @@
     <div ng-show="showUsers">
         <md-list>
             <md-list-item>
-                <span class="md-title" flex="5">ID</span><span class="md-title">Username/E-Mail</span>
+                <span class="md-title" flex="5">ID</span><span class="md-title">E-Mail(=Username)</span>
                 <md-divider></md-divider>
             </md-list-item>
             <md-list-item ng-repeat="user in ctrl.users | orderBy:'id'" ng-click="ctrl.getSingleUser(user)" class="userItem">
